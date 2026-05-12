@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
 <title>Confeitaria da Jo - Gestao</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -331,6 +332,17 @@ input,select,textarea{outline:none}
         <div id="site-pedidos-list"></div>
       </div>
 
+      <!-- FEEDBACKS PENDENTES -->
+      <div id="site-feedbacks-section" style="display:none;margin-top:1rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <div style="background:rgba(232,100,138,.12);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">&#128172;</div>
+            <div style="font-family:Playfair Display,serif;font-size:1rem;font-weight:700;color:var(--tx1)">Feedbacks do Site</div>
+          </div>
+          <span id="site-feedbacks-count" style="background:rgba(232,100,138,.12);color:var(--pk);font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:100px">0 novos</span>
+        </div>
+        <div id="site-feedbacks-list"></div>
+      </div>
     </div>
 
     <!-- PEDIDOS -->
@@ -484,7 +496,7 @@ input,select,textarea{outline:none}
     <label class="form-label">Nome Completo <span class="required">*</span></label>
     <input class="form-input" id="cli-nome" type="text" placeholder="Nome do cliente">
     <div id="cli-dup-warn" style="display:none;background:var(--rd2);border:1px solid var(--rd);color:var(--rd);font-size:.75rem;padding:.4rem .7rem;border-radius:8px;margin-top:.3rem">
-      ⚠️ Ja existe um cliente com este nome. Verifique antes de salvar.
+      âš ï¸ Ja existe um cliente com este nome. Verifique antes de salvar.
     </div>
   </div>
   <div class="form-row">
@@ -647,7 +659,7 @@ input,select,textarea{outline:none}
 const SB_URL = "https://dehvmzpmxhcaqimsfdhr.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaHZtenBteGhjYXFpbXNmZGhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzY3MDEsImV4cCI6MjA5MzcxMjcwMX0.VC6qQ2d7MGsrbw07_-8x1oP9xvE68nwxTHxB6ypVggg";
 let sb, currentUser;
-let DATA = { pedidos:[], clientes:[], compras:[] };
+let DATA = { pedidos:[], clientes:[], compras:[], feedbacks:[] };
 let allSitePedidos = [];
 let produtosTemp = [];
 let calDate = new Date();
@@ -659,7 +671,7 @@ function initSB(){ sb = supabase.createClient(SB_URL, SB_KEY); }
 // TOAST
 function toast(msg, type='ok'){
   const el = document.getElementById('toast');
-  el.textContent = (type==='ok'?'✓ ':'✗ ') + msg;
+  el.textContent = (type==='ok'?'âœ“ ':'âœ— ') + msg;
   el.style.background = type==='ok'?'#1A1208':'#DC2626';
   el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'), 3000);
@@ -667,7 +679,7 @@ function toast(msg, type='ok'){
 
 // FORMAT
 function fmtM(v){ return 'R$ '+parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
-function fmtD(d){ if(!d)return'–'; try{ return new Date(d+'T12:00:00').toLocaleDateString('pt-BR'); }catch(e){return d;} }
+function fmtD(d){ if(!d)return'â€“'; try{ return new Date(d+'T12:00:00').toLocaleDateString('pt-BR'); }catch(e){return d;} }
 function esc(t){ return (t||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // AUTH
@@ -729,7 +741,7 @@ const STATUS_LABELS={novo:'Novo',confirmado:'Confirmado',producao:'Em Producao',
 const STATUS_TAGS={novo:'tag-bl',confirmado:'tag-or',producao:'tag-am',pronto:'tag-gn',entregue:'tag-tx',cancelado:'tag-rd'};
 
 async function loadPedidos(){
-  const {data,error}=await sb.from('pedidos').select('*').order('created_at',{ascending:false});
+  const {data,error}=await sb.from('pedidos').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
   if(!error) DATA.pedidos=data||[];
   const ab=DATA.pedidos.filter(p=>!['entregue','cancelado'].includes(p.status)).length;
   const nb=document.getElementById('nb-pedidos');
@@ -744,7 +756,7 @@ function renderPedidos(){
     (p.numero||'').toLowerCase().includes(s)
   );
   if(!filtered.length){
-    container.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">Nenhum pedido encontrado</div><div class="empty-sub">Cadastre o primeiro pedido clicando em "+ Novo"</div></div>`;
+    container.innerHTML=`<div class="empty-state"><div class="empty-icon">ðŸ“¦</div><div class="empty-title">Nenhum pedido encontrado</div><div class="empty-sub">Cadastre o primeiro pedido clicando em "+ Novo"</div></div>`;
     return;
   }
   container.innerHTML=filtered.map(p=>{
@@ -754,7 +766,7 @@ function renderPedidos(){
       <div class="list-avatar" style="background:linear-gradient(135deg,var(--or),var(--or2));font-size:.7rem;font-weight:800">${esc(p.numero||'?')}</div>
       <div class="list-body">
         <div class="list-title">${esc(p.cliente)}</div>
-        <div class="list-sub">${itens.length} item(s) • Entrega: ${fmtD(p.data_entrega)}</div>
+        <div class="list-sub">${itens.length} item(s) â€¢ Entrega: ${fmtD(p.data_entrega)}</div>
         <div style="margin-top:4px"><span class="tag ${STATUS_TAGS[p.status]||'tag-tx'}">${STATUS_LABELS[p.status]||p.status}</span></div>
       </div>
       <div class="list-right">
@@ -917,7 +929,7 @@ async function salvarPedido(){
     user_id:currentUser.id
   };
   let error;
-  if(id){({error}=await sb.from('pedidos').update(payload).eq('id',id));}
+  if(id){({error}=await sb.from('pedidos').update(payload).eq('id',id).eq('user_id',currentUser.id));}
   else{({error}=await sb.from('pedidos').insert(payload)); autoAddCliente(cliente);}
   if(error){toast('Erro ao salvar: '+error.message,'err');return;}
   toast('Pedido salvo com sucesso!');
@@ -928,7 +940,7 @@ async function salvarPedido(){
 async function excluirPedido(){
   const id=document.getElementById('ped-id').value;
   if(!id||!confirm('Deseja excluir este pedido definitivamente?'))return;
-  const {error}=await sb.from('pedidos').delete().eq('id',id);
+  const {error}=await sb.from('pedidos').delete().eq('id',id).eq('user_id',currentUser.id);
   if(error){toast('Erro ao excluir.','err');return;}
   toast('Pedido excluido.');
   closeModal('modal-pedido');
@@ -937,7 +949,7 @@ async function excluirPedido(){
 
 // CLIENTES
 async function loadClientes(){
-  const {data,error}=await sb.from('clientes').select('*').order('nome');
+  const {data,error}=await sb.from('clientes').select('*').eq('user_id',currentUser.id).order('nome');
   if(!error) DATA.clientes=data||[];
 }
 
@@ -950,7 +962,7 @@ function renderClientes(){
   const s=(document.getElementById('cli-search').value||'').toLowerCase();
   const filtered=DATA.clientes.filter(c=>(c.nome||'').toLowerCase().includes(s)||(c.telefone||'').includes(s));
   if(!filtered.length){
-    container.innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Nenhum cliente encontrado</div><div class="empty-sub">Cadastre o primeiro cliente clicando em "+ Novo"</div></div>`;
+    container.innerHTML=`<div class="empty-state"><div class="empty-icon">ðŸ‘¥</div><div class="empty-title">Nenhum cliente encontrado</div><div class="empty-sub">Cadastre o primeiro cliente clicando em "+ Novo"</div></div>`;
     return;
   }
   container.innerHTML=filtered.map(c=>{
@@ -961,12 +973,12 @@ function renderClientes(){
       <div class="list-avatar">${ini}</div>
       <div class="list-body">
         <div class="list-title">${esc(c.nome)}</div>
-        <div class="list-sub">${esc(c.telefone||'–')} ${c.cidade?'• '+esc(c.cidade):''}</div>
+        <div class="list-sub">${esc(c.telefone||'â€“')} ${c.cidade?'â€¢ '+esc(c.cidade):''}</div>
         ${igHtml?`<div style="margin-top:3px">${igHtml}</div>`:''}
       </div>
       <div class="list-right">
         <div class="list-val" style="font-size:.82rem;color:var(--tx3)">${pedidos} pedido${pedidos!==1?'s':''}</div>
-        ${c.nascimento?`<div class="list-date">🎂 ${fmtD(c.nascimento)}</div>`:''}
+        ${c.nascimento?`<div class="list-date">ðŸŽ‚ ${fmtD(c.nascimento)}</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -1027,7 +1039,7 @@ async function salvarCliente(){
     cep:document.getElementById('cli-cep').value,cidade:document.getElementById('cli-cidade').value,
     observacoes:document.getElementById('cli-obs').value,user_id:currentUser.id};
   let error;
-  if(id){({error}=await sb.from('clientes').update(payload).eq('id',id));}
+  if(id){({error}=await sb.from('clientes').update(payload).eq('id',id).eq('user_id',currentUser.id));}
   else{({error}=await sb.from('clientes').insert(payload));}
   if(error){toast('Erro: '+error.message,'err');return;}
   toast('Cliente salvo com sucesso!');
@@ -1038,7 +1050,7 @@ async function salvarCliente(){
 async function excluirCliente(){
   const id=document.getElementById('cli-id').value;
   if(!id||!confirm('Deseja excluir este cliente definitivamente?'))return;
-  const {error}=await sb.from('clientes').delete().eq('id',id);
+  const {error}=await sb.from('clientes').delete().eq('id',id).eq('user_id',currentUser.id);
   if(error){toast('Erro ao excluir.','err');return;}
   toast('Cliente excluido.');
   closeModal('modal-cliente');
@@ -1053,14 +1065,14 @@ async function autoAddCliente(nome){
 
 // ESTOQUE
 async function loadCompras(){
-  const {data,error}=await sb.from('compras').select('*').order('data_compra',{ascending:false});
+  const {data,error}=await sb.from('compras').select('*').eq('user_id',currentUser.id).order('data_compra',{ascending:false});
   if(!error) DATA.compras=data||[];
 }
 
 function renderEstoque(){
   const container=document.getElementById('estoque-list');
   if(!DATA.compras.length){
-    container.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">Nenhuma compra registrada</div><div class="empty-sub">Registre a primeira compra clicando em "+ Compra"</div></div>`;
+    container.innerHTML=`<div class="empty-state"><div class="empty-icon">ðŸ“¦</div><div class="empty-title">Nenhuma compra registrada</div><div class="empty-sub">Registre a primeira compra clicando em "+ Compra"</div></div>`;
     return;
   }
   const hoje=new Date(); hoje.setHours(0,0,0,0);
@@ -1073,10 +1085,10 @@ function renderEstoque(){
       else if(val<=em7) alertClass='tag-am';
     }
     return `<div class="list-item" onclick="editarCompra('${c.id}')">
-      <div class="list-avatar" style="background:linear-gradient(135deg,var(--gn),#15803d);font-size:1.2rem">📦</div>
+      <div class="list-avatar" style="background:linear-gradient(135deg,var(--gn),#15803d);font-size:1.2rem">ðŸ“¦</div>
       <div class="list-body">
         <div class="list-title">${esc(c.produto)}</div>
-        <div class="list-sub">${c.quantidade} ${c.unidade||''} ${c.marca?'• '+esc(c.marca):''} ${c.fornecedor?'• '+esc(c.fornecedor):''}</div>
+        <div class="list-sub">${c.quantidade} ${c.unidade||''} ${c.marca?'â€¢ '+esc(c.marca):''} ${c.fornecedor?'â€¢ '+esc(c.fornecedor):''}</div>
         ${c.data_validade?`<div style="margin-top:3px"><span class="tag ${alertClass||'tag-tx'}" style="font-size:.65rem">Val: ${fmtD(c.data_validade)}</span></div>`:''}
       </div>
       <div class="list-right">
@@ -1136,7 +1148,7 @@ async function salvarCompra(){
     data_validade:document.getElementById('cmp-validade').value||null,
     valor_unitario:vlun,valor_total:qtd*vlun,user_id:currentUser.id};
   let error;
-  if(id){({error}=await sb.from('compras').update(payload).eq('id',id));}
+  if(id){({error}=await sb.from('compras').update(payload).eq('id',id).eq('user_id',currentUser.id));}
   else{({error}=await sb.from('compras').insert(payload));}
   if(error){toast('Erro: '+error.message,'err');return;}
   toast('Compra registrada!');
@@ -1147,7 +1159,7 @@ async function salvarCompra(){
 async function excluirCompra(){
   const id=document.getElementById('cmp-id').value;
   if(!id||!confirm('Deseja excluir este registro?'))return;
-  const {error}=await sb.from('compras').delete().eq('id',id);
+  const {error}=await sb.from('compras').delete().eq('id',id).eq('user_id',currentUser.id);
   if(error){toast('Erro.','err');return;}
   toast('Registro excluido.');
   closeModal('modal-compra');
@@ -1165,20 +1177,20 @@ function setHistTab(tab, el){
 function renderHist(){
   const c=document.getElementById('hist-content');
   if(currentHistTab==='clientes'){
-    if(!DATA.clientes.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Nenhum cliente cadastrado</div></div>`;return;}
+    if(!DATA.clientes.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">ðŸ‘¥</div><div class="empty-title">Nenhum cliente cadastrado</div></div>`;return;}
     c.innerHTML=DATA.clientes.map(cl=>{
       const ini=cl.nome.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
       return `<div class="list-item" onclick="editarCliente('${cl.id}')">
         <div class="list-avatar">${ini}</div>
         <div class="list-body">
           <div class="list-title">${esc(cl.nome)}</div>
-          <div class="list-sub">${esc(cl.telefone||'–')} ${cl.cidade?'• '+esc(cl.cidade):''}</div>
+          <div class="list-sub">${esc(cl.telefone||'â€“')} ${cl.cidade?'â€¢ '+esc(cl.cidade):''}</div>
         </div>
         <div class="list-right"><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editarCliente('${cl.id}')">Editar</button></div>
       </div>`;
     }).join('');
   } else if(currentHistTab==='pedidos'){
-    if(!DATA.pedidos.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">Nenhum pedido cadastrado</div></div>`;return;}
+    if(!DATA.pedidos.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">ðŸ“¦</div><div class="empty-title">Nenhum pedido cadastrado</div></div>`;return;}
     c.innerHTML=DATA.pedidos.map(p=>{
       const itens=JSON.parse(p.itens||'[]');
       const total=itens.reduce((a,i)=>a+(parseFloat(i.valor_total)||0),0);
@@ -1186,18 +1198,18 @@ function renderHist(){
         <div class="list-avatar" style="font-size:.65rem;font-weight:800">${esc(p.numero||'?')}</div>
         <div class="list-body">
           <div class="list-title">${esc(p.cliente)}</div>
-          <div class="list-sub">Entrega: ${fmtD(p.data_entrega)} • <span class="tag ${STATUS_TAGS[p.status]||'tag-tx'}" style="font-size:.65rem">${STATUS_LABELS[p.status]||p.status}</span></div>
+          <div class="list-sub">Entrega: ${fmtD(p.data_entrega)} â€¢ <span class="tag ${STATUS_TAGS[p.status]||'tag-tx'}" style="font-size:.65rem">${STATUS_LABELS[p.status]||p.status}</span></div>
         </div>
         <div class="list-right"><div class="list-val">${fmtM(total)}</div><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editarPedido('${p.id}')">Editar</button></div>
       </div>`;
     }).join('');
   } else {
-    if(!DATA.compras.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">Nenhuma compra registrada</div></div>`;return;}
+    if(!DATA.compras.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">ðŸ“¦</div><div class="empty-title">Nenhuma compra registrada</div></div>`;return;}
     c.innerHTML=DATA.compras.map(cp=>`<div class="list-item" onclick="editarCompra('${cp.id}')">
-      <div class="list-avatar" style="background:linear-gradient(135deg,var(--gn),#15803d);font-size:1.1rem">📦</div>
+      <div class="list-avatar" style="background:linear-gradient(135deg,var(--gn),#15803d);font-size:1.1rem">ðŸ“¦</div>
       <div class="list-body">
         <div class="list-title">${esc(cp.produto)}</div>
-        <div class="list-sub">${cp.quantidade} ${cp.unidade||''} • ${fmtD(cp.data_compra)}</div>
+        <div class="list-sub">${cp.quantidade} ${cp.unidade||''} â€¢ ${fmtD(cp.data_compra)}</div>
       </div>
       <div class="list-right"><div class="list-val">${fmtM(cp.valor_total)}</div><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editarCompra('${cp.id}')">Editar</button></div>
     </div>`).join('');
@@ -1235,7 +1247,7 @@ function renderInicio(){
   const pizzaLabels=Object.keys(catMap);
   const pizzaData=Object.values(catMap);
   const pizzaColors=['#E8702A','#E8648A','#C9A84C','#9C8470'];
-  renderAniversariantes(); loadSitePedidos();
+  renderAniversariantes(); loadSitePedidos(); loadFeedbacks();
   if(chartPizza) chartPizza.destroy();
   const ctxP=document.getElementById('chart-pizza');
   if(ctxP){
@@ -1324,9 +1336,9 @@ function showCalDay(d,m,y){
   });
   if(!entregasPedidos.length&&!pedidosDia.length&&!vencimentos.length){document.getElementById('cal-day-detail').innerHTML='';return;}
   let html=`<div style="font-size:.8rem;font-weight:600;color:var(--tx2);margin-bottom:.5rem">Dia ${d}/${m+1}/${y}</div>`;
-  if(entregasPedidos.length) html+=entregasPedidos.map(p=>`<div class="acard" style="background:var(--pk2);border-color:var(--pk);color:var(--pk);font-size:.78rem;margin-bottom:.3rem"><span>🚚 Entrega: ${esc(p.cliente)} — ${esc(p.numero||'')}</span></div>`).join('');
-  if(pedidosDia.length) html+=pedidosDia.map(p=>`<div class="acard" style="background:var(--or3);border-color:var(--or);color:var(--or);font-size:.78rem;margin-bottom:.3rem"><span>📋 Pedido: ${esc(p.cliente)} — ${esc(p.numero||'')}</span></div>`).join('');
-  if(vencimentos.length) html+=vencimentos.map(c=>`<div class="acard" style="background:var(--rd2);border-color:var(--rd);color:var(--rd);font-size:.78rem;margin-bottom:.3rem"><span>⚠️ Vencimento: ${esc(c.produto)}</span></div>`).join('');
+  if(entregasPedidos.length) html+=entregasPedidos.map(p=>`<div class="acard" style="background:var(--pk2);border-color:var(--pk);color:var(--pk);font-size:.78rem;margin-bottom:.3rem"><span>ðŸšš Entrega: ${esc(p.cliente)} â€” ${esc(p.numero||'')}</span></div>`).join('');
+  if(pedidosDia.length) html+=pedidosDia.map(p=>`<div class="acard" style="background:var(--or3);border-color:var(--or);color:var(--or);font-size:.78rem;margin-bottom:.3rem"><span>ðŸ“‹ Pedido: ${esc(p.cliente)} â€” ${esc(p.numero||'')}</span></div>`).join('');
+  if(vencimentos.length) html+=vencimentos.map(c=>`<div class="acard" style="background:var(--rd2);border-color:var(--rd);color:var(--rd);font-size:.78rem;margin-bottom:.3rem"><span>âš ï¸ Vencimento: ${esc(c.produto)}</span></div>`).join('');
   document.getElementById('cal-day-detail').innerHTML=html;
 }
 
@@ -1430,7 +1442,7 @@ function renderAniversariantes(){
 // PEDIDOS DO SITE (via Supabase tabela site_pedidos)
 async function loadSitePedidos(){
   try{
-    const {data,error} = await sb.from('site_pedidos').select('*').eq('status','pendente').order('created_at',{ascending:false});
+    const {data,error} = await sb.from('site_pedidos').select('*').eq('user_id',currentUser.id).eq('status','pendente').order('created_at',{ascending:false});
     if(error||!data||!data.length){
       allSitePedidos=[];
       document.getElementById('site-pedidos-section').style.display='none';
@@ -1489,7 +1501,7 @@ async function confirmarSitePedido(id){
   };
   const {error} = await sb.from('pedidos').insert(payload);
   if(error){ toast('Erro ao criar pedido: '+error.message,'err'); return; }
-  await sb.from('site_pedidos').update({status:'confirmado'}).eq('id',id);
+  await sb.from('site_pedidos').update({status:'confirmado'}).eq('id',id).eq('user_id',currentUser.id);
   autoAddCliente(sp.nome_cliente, sp.telefone || '');
   toast('Pedido criado com sucesso!');
   await Promise.all([loadPedidos(), loadSitePedidos()]);
@@ -1498,11 +1510,58 @@ async function confirmarSitePedido(id){
 
 async function rejeitarSitePedido(id){
   if(!confirm('Rejeitar este pedido do site?')) return;
-  await sb.from('site_pedidos').update({status:'rejeitado'}).eq('id',id);
+  await sb.from('site_pedidos').update({status:'rejeitado'}).eq('id',id).eq('user_id',currentUser.id);
   toast('Pedido rejeitado.');
   loadSitePedidos();
 }
 
+// FEEDBACKS DO SITE
+async function loadFeedbacks(){
+  try{
+    const {data,error} = await sb.from('feedbacks').select('*').eq('user_id',currentUser.id).eq('status','pendente').order('created_at',{ascending:false});
+    const sec = document.getElementById('site-feedbacks-section');
+    const list = document.getElementById('site-feedbacks-list');
+    if(error||!data||!data.length){
+      DATA.feedbacks=[];
+      sec.style.display='none';
+      return;
+    }
+    DATA.feedbacks = data;
+    sec.style.display='block';
+    document.getElementById('site-feedbacks-count').textContent = data.length + ' novo'+(data.length!==1?'s':'');
+    list.innerHTML = data.map(f => {
+      const estrelas = '★'.repeat(parseInt(f.estrelas||5,10));
+      return '<div style="background:var(--bg2);border:1px solid rgba(232,100,138,.2);border-radius:14px;padding:1rem;margin-bottom:.7rem">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">'
+        + '<div style="font-weight:600;color:var(--tx1)">' + esc(f.nome) + '</div>'
+        + '<span style="background:rgba(232,100,138,.1);color:var(--pk);font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:100px">' + estrelas + '</span>'
+        + '</div>'
+        + '<div style="font-size:.82rem;color:var(--tx3);font-style:italic;margin-bottom:.7rem">' + esc(f.mensagem) + '</div>'
+        + '<div style="display:flex;gap:.5rem;margin-top:.5rem">'
+        + '<button style="flex:1;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;border-radius:100px;padding:.45rem;font-size:.78rem;font-weight:600;cursor:pointer" onclick="aprovarFeedbackSite(\'' + f.id + '\')">Aprovar no site</button>'
+        + '<button style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171;border-radius:100px;padding:.45rem .8rem;font-size:.78rem;cursor:pointer" onclick="rejeitarFeedbackSite(\'' + f.id + '\')">Rejeitar</button>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+  }catch(e){
+    document.getElementById('site-feedbacks-section').style.display='none';
+  }
+}
+
+async function aprovarFeedbackSite(id){
+  const {error} = await sb.from('feedbacks').update({status:'aprovado'}).eq('id',id).eq('user_id',currentUser.id);
+  if(error){ toast('Erro ao aprovar feedback.','err'); return; }
+  toast('Feedback aprovado!');
+  loadFeedbacks();
+}
+
+async function rejeitarFeedbackSite(id){
+  if(!confirm('Rejeitar este feedback?')) return;
+  const {error} = await sb.from('feedbacks').update({status:'rejeitado'}).eq('id',id).eq('user_id',currentUser.id);
+  if(error){ toast('Erro ao rejeitar feedback.','err'); return; }
+  toast('Feedback rejeitado.');
+  loadFeedbacks();
+}
 
 // BOOT
 initSB();
@@ -1510,3 +1569,7 @@ checkSession();
 </script>
 </body>
 </html>
+
+
+
+
