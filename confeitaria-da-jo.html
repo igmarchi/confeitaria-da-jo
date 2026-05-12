@@ -1814,6 +1814,9 @@
   </a>
 
   <p class="footer-copy">© 2026 Confeitaria da Jô · Todos os direitos reservados</p>
+  <p class="footer-copy" style="margin-top:0.8rem">
+    <a href="gestao-confeitaria-da-jo.html" target="_blank" rel="noopener" style="color:rgba(201,181,154,0.55);text-decoration:none">Área da Jô</a>
+  </p>
 </footer>
 
 
@@ -2070,7 +2073,7 @@ async function enviarPedido() {
   }
 }
 
-renderMural();
+renderMural().catch(function(){});
 </script>
 <script>
 // ── CADASTRO CLIENTE SITE ──────────────────────────────────────────
@@ -2365,6 +2368,7 @@ function selecionarDoCar(produto){
 
 </body>
 </html>
+
 
 
 
