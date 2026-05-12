@@ -1112,12 +1112,14 @@
     overflow: hidden;
     border: 1px solid rgba(232,112,42,0.2);
     box-shadow: 0 12px 40px rgba(0,0,0,0.35);
-    height: 300px;
+    min-height: 300px;
+    height: auto;
     background: var(--brown-mid);
     display: flex; align-items: center; justify-content: center;
     flex-direction: column;
     gap: 1rem;
     position: relative;
+    padding: 2rem 1.5rem;
   }
   .location-map-box iframe {
     width: 100%; height: 100%;
@@ -1186,6 +1188,218 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+
+  /* ── MODAL VERIFICACAO ── */
+  .modal-check-box {
+    background: var(--brown-dark);
+    border: 1px solid rgba(232,112,42,0.3);
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    animation: modalIn 0.3s ease;
+    text-align: center;
+  }
+
+  .modal-check-title {
+    font-family: "Playfair Display", serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--orange-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-check-sub {
+    font-size: 0.88rem;
+    color: var(--cream-dim);
+    margin-bottom: 1.8rem;
+    line-height: 1.6;
+  }
+
+  .modal-check-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .btn-check-sim {
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    color: var(--brown-deep);
+    border: none;
+    border-radius: 100px;
+    padding: 0.85rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+    transition: filter 0.2s, transform 0.2s;
+    box-shadow: 0 4px 16px rgba(232,112,42,0.3);
+  }
+  .btn-check-sim:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+  .btn-check-nao {
+    background: rgba(232,100,138,0.12);
+    border: 1.5px solid rgba(232,100,138,0.3);
+    color: var(--pink-soft);
+    border-radius: 100px;
+    padding: 0.85rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-check-nao:hover { background: rgba(232,100,138,0.2); }
+
+  /* ── MODAL CADASTRO CLIENTE ── */
+  .cadastro-box {
+    background: var(--brown-dark);
+    border: 1px solid rgba(232,112,42,0.25);
+    border-radius: 24px;
+    padding: 2rem 1.8rem 2.5rem;
+    width: 100%;
+    max-width: 520px;
+    max-height: 92vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.3s ease;
+  }
+
+  .cadastro-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+  }
+
+  .prog-step {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(232,112,42,0.15);
+    border: 1.5px solid rgba(232,112,42,0.2);
+    color: var(--cream-dim);
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+
+  .prog-step.active {
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    border-color: var(--orange);
+    color: var(--brown-deep);
+    box-shadow: 0 2px 10px rgba(232,112,42,0.35);
+  }
+
+  .prog-step.done {
+    background: rgba(34,197,94,0.15);
+    border-color: rgba(34,197,94,0.4);
+    color: #4ade80;
+  }
+
+  .prog-line {
+    flex: 1;
+    height: 1.5px;
+    background: rgba(232,112,42,0.15);
+    max-width: 40px;
+  }
+
+  .cadastro-step { display: none; }
+  .cadastro-step.active { display: block; }
+
+  .cadastro-success {
+    text-align: center;
+    padding: 1.5rem 0;
+  }
+
+  .success-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1));
+    border: 2px solid rgba(34,197,94,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1.2rem;
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  /* Banner de cadastro flutuante */
+  .cadastro-banner {
+    position: fixed;
+    bottom: 5.5rem;
+    right: 1.5rem;
+    background: linear-gradient(135deg, var(--brown-mid), var(--brown-warm));
+    border: 1px solid rgba(232,112,42,0.3);
+    border-radius: 16px;
+    padding: 0.9rem 1.2rem;
+    max-width: 260px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    z-index: 800;
+    animation: slideUp 0.5s 2s cubic-bezier(0.34,1.56,0.64,1) both;
+    cursor: pointer;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .cadastro-banner-title {
+    font-family: "Playfair Display", serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--orange-light);
+    margin-bottom: 0.25rem;
+  }
+
+  .cadastro-banner-sub {
+    font-size: 0.75rem;
+    color: var(--cream-dim);
+    line-height: 1.5;
+  }
+
+  .cadastro-banner-btn {
+    display: inline-block;
+    margin-top: 0.6rem;
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    color: var(--brown-deep);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+  }
+
+  .cadastro-banner-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.7rem;
+    background: none;
+    border: none;
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .cpf-valid { border-color: rgba(34,197,94,0.5) !important; }
+  .cpf-invalid { border-color: rgba(239,68,68,0.5) !important; }
 
 </style>
 </head>
@@ -1557,7 +1771,7 @@
 <section class="location-section">
   <div class="location-inner">
 
-    <div class="location-map-box reveal" style="background:linear-gradient(145deg,var(--brown-mid),var(--brown-warm));flex-direction:column;gap:1.5rem;padding:2.5rem;text-align:center;">
+    <div class="location-map-box reveal" style="background:linear-gradient(145deg,var(--brown-mid),var(--brown-warm));flex-direction:column;gap:1rem;text-align:center;">
       <div style="font-size:5rem;">🧺</div>
       <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--orange-light);font-weight:700;">Retirada no local</div>
       <p style="font-size:0.9rem;color:var(--cream-dim);line-height:1.7;max-width:280px;">
@@ -1689,6 +1903,16 @@ function toggleMenu() {
     btn.textContent = 'Ver cardápio completo 🍬';
   }
 }
+
+function closeModal(id){
+  var el = document.getElementById(id);
+  if(el) el.classList.remove('active');
+}
+function openModal(id){
+  var el = document.getElementById(id);
+  if(el) el.classList.add('active');
+}
+
 </script>
 
 
@@ -2003,6 +2227,398 @@ renderMural();
   }, { threshold: 0.12 });
   reveals.forEach(function(el){ observer.observe(el); });
 })();
+</script>
+
+
+<!-- ════════ BANNER CADASTRO FLUTUANTE ════════ -->
+<div class="cadastro-banner" id="cadastro-banner">
+  <button class="cadastro-banner-close" onclick="document.getElementById('cadastro-banner').style.display='none'">✕</button>
+  <div class="cadastro-banner-title">🎂 Primeira vez aqui?</div>
+  <div class="cadastro-banner-sub">Cadastre-se e facilite seus próximos pedidos na Confeitaria da Jô!</div>
+  <button class="cadastro-banner-btn" onclick="document.getElementById('cadastro-banner').style.display='none';abrirCadastroCliente(false)">Cadastrar agora</button>
+</div>
+
+<!-- ════════ MODAL: JÁ TEM CADASTRO? ════════ -->
+<div class="modal-overlay" id="modal-check-cadastro">
+  <div class="modal-check-box">
+    <div style="font-size:2.5rem;margin-bottom:0.8rem">🎂</div>
+    <div class="modal-check-title">Olá! Já nos conhecemos?</div>
+    <div class="modal-check-sub">Para agilizar seu pedido, nos diga se você já tem cadastro na Confeitaria da Jô.</div>
+    <div class="modal-check-btns">
+      <button class="btn-check-sim" onclick="document.getElementById('modal-check-cadastro').classList.remove('active');openPedidoModalDireto()">
+        ✅ Já tenho cadastro
+      </button>
+      <button class="btn-check-nao" onclick="document.getElementById('modal-check-cadastro').classList.remove('active');abrirCadastroCliente(true)">
+        📝 Ainda não tenho
+      </button>
+    </div>
+    <div style="margin-top:1rem;font-size:0.75rem;color:var(--cream-dim)">
+      <a href="#" onclick="document.getElementById('modal-check-cadastro').classList.remove('active');openPedidoModalDireto();return false;" style="color:var(--cream-dim);text-decoration:underline">Continuar sem cadastro</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL: CADASTRO CLIENTE ════════ -->
+<div class="modal-overlay" id="modal-cadastro-cliente">
+  <div class="cadastro-box">
+    <button class="modal-close" onclick="document.getElementById('modal-cadastro-cliente').classList.remove('active')">✕</button>
+
+    <!-- Progress -->
+    <div class="cadastro-progress">
+      <div class="prog-step active" id="prog-1">1</div>
+      <div class="prog-line"></div>
+      <div class="prog-step" id="prog-2">2</div>
+      <div class="prog-line"></div>
+      <div class="prog-step" id="prog-3">3</div>
+    </div>
+
+    <!-- Step 1: Dados pessoais -->
+    <div class="cadastro-step active" id="cad-step-1">
+      <div class="modal-title" style="margin-bottom:0.3rem">👤 Dados Pessoais</div>
+      <p class="modal-sub" style="margin-bottom:1.2rem">Passo 1 de 3 — Informações básicas</p>
+
+      <div class="form-group">
+        <label class="form-label">Nome completo *</label>
+        <input class="form-input" id="cad-nome" type="text" placeholder="Seu nome completo">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">CPF *</label>
+          <input class="form-input" id="cad-cpf" type="text" placeholder="000.000.000-00" maxlength="14"
+            oninput="maskCPFCad(this)" onblur="validarCPFCad(this)">
+          <div id="cad-cpf-msg" style="font-size:0.72rem;margin-top:0.25rem;display:none"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data de Nascimento</label>
+          <input class="form-input" id="cad-nasc" type="date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Telefone / WhatsApp *</label>
+          <input class="form-input" id="cad-tel" type="tel" placeholder="(19) 9 0000-0000" maxlength="16"
+            oninput="maskTelCad(this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input class="form-input" id="cad-email" type="email" placeholder="seu@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Instagram</label>
+        <input class="form-input" id="cad-ig" type="text" placeholder="@seuusuario">
+      </div>
+      <button class="btn-submit" onclick="cadStep1Next()" style="margin-top:0.5rem">
+        Próximo →
+      </button>
+    </div>
+
+    <!-- Step 2: Endereço -->
+    <div class="cadastro-step" id="cad-step-2">
+      <div class="modal-title" style="margin-bottom:0.3rem">📍 Endereço</div>
+      <p class="modal-sub" style="margin-bottom:1.2rem">Passo 2 de 3 — Onde você mora?</p>
+
+      <div class="form-group">
+        <label class="form-label">CEP *</label>
+        <div style="position:relative">
+          <input class="form-input" id="cad-cep" type="text" placeholder="00000-000" maxlength="9"
+            oninput="maskCEPCad(this)" onblur="buscarCEPCad(this.value)">
+          <div id="cad-cep-loading" style="display:none;position:absolute;right:.8rem;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--cream-dim)">Buscando...</div>
+        </div>
+        <div id="cad-cep-warn" style="display:none;font-size:.72rem;color:#f87171;margin-top:.25rem">CEP não encontrado.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Rua</label>
+          <input class="form-input" id="cad-rua" type="text" placeholder="Preenchido automaticamente">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Número</label>
+          <input class="form-input" id="cad-num" type="text" placeholder="123">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Bairro</label>
+          <input class="form-input" id="cad-bairro" type="text" placeholder="Preenchido automaticamente">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade</label>
+          <input class="form-input" id="cad-cidade" type="text" placeholder="Preenchido automaticamente">
+        </div>
+      </div>
+      <div style="display:flex;gap:0.6rem;margin-top:0.5rem">
+        <button class="btn-submit" onclick="cadStep2Next()" style="flex:1">Próximo →</button>
+        <button onclick="cadGoStep(1)" style="background:rgba(232,112,42,.08);border:1px solid rgba(232,112,42,.2);color:var(--orange-light);border-radius:100px;padding:.7rem 1.2rem;cursor:pointer;font-family:DM Sans,sans-serif;font-size:.85rem">← Voltar</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Revisão + Observações -->
+    <div class="cadastro-step" id="cad-step-3">
+      <div class="modal-title" style="margin-bottom:0.3rem">✅ Confirmar</div>
+      <p class="modal-sub" style="margin-bottom:1.2rem">Passo 3 de 3 — Revise e finalize</p>
+      <div id="cad-resumo" style="background:var(--brown-mid);border:1px solid rgba(232,112,42,.15);border-radius:14px;padding:1rem 1.2rem;margin-bottom:1rem;font-size:0.85rem;color:var(--cream-dim);line-height:1.8"></div>
+      <div class="form-group">
+        <label class="form-label">Observações</label>
+        <textarea class="form-textarea" id="cad-obs" placeholder="Preferências, alergias, informações adicionais..."></textarea>
+      </div>
+      <div style="display:flex;gap:0.6rem;margin-top:0.5rem">
+        <button class="btn-submit" onclick="finalizarCadastro()" style="flex:1">
+          🎉 Finalizar cadastro
+        </button>
+        <button onclick="cadGoStep(2)" style="background:rgba(232,112,42,.08);border:1px solid rgba(232,112,42,.2);color:var(--orange-light);border-radius:100px;padding:.7rem 1.2rem;cursor:pointer;font-family:DM Sans,sans-serif;font-size:.85rem">← Voltar</button>
+      </div>
+    </div>
+
+    <!-- Sucesso -->
+    <div class="cadastro-step" id="cad-step-success">
+      <div class="cadastro-success">
+        <div class="success-icon">🎂</div>
+        <div style="font-family:Playfair Display,serif;font-size:1.3rem;font-weight:700;color:var(--orange-light);margin-bottom:0.5rem">Cadastro realizado!</div>
+        <p style="font-size:0.88rem;color:var(--cream-dim);margin-bottom:1.5rem;line-height:1.6">
+          Seja muito bem-vinda à família da Confeitaria da Jô! 🌸<br>
+          Agora você pode fazer seu pedido com muito mais facilidade.
+        </p>
+        <button class="btn-submit" id="btn-apos-cadastro" onclick="aposFinalizarCadastro()">
+          🎂 Fazer meu pedido agora
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+// ── CADASTRO CLIENTE SITE ──────────────────────────────────────────
+var cadStep = 1;
+var cadAbrirPedidoApos = false;
+var SUPABASE_URL_CAD = 'https://dehvmzpmxhcaqimsfdhr.supabase.co';
+var SUPABASE_KEY_CAD = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaHZtenBteGhjYXFpbXNmZGhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzY3MDEsImV4cCI6MjA5MzcxMjcwMX0.VC6qQ2d7MGsrbw07_-8x1oP9xvE68nwxTHxB6ypVggg';
+
+// Mascaras
+function maskCPFCad(el){
+  var v=el.value.replace(/\D/g,'').substring(0,11);
+  if(v.length>9) v=v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');
+  else if(v.length>6) v=v.replace(/(\d{3})(\d{3})(\d{1,3})/,'$1.$2.$3');
+  else if(v.length>3) v=v.replace(/(\d{3})(\d{1,3})/,'$1.$2');
+  el.value=v;
+}
+
+function validarCPFCad(el){
+  var msg=document.getElementById('cad-cpf-msg');
+  var nums=el.value.replace(/\D/g,'');
+  if(!nums){msg.style.display='none';el.classList.remove('cpf-valid','cpf-invalid');return true;}
+  if(nums.length!==11||/^(\d)\1{10}$/.test(nums)){
+    msg.textContent='CPF inválido.';msg.style.color='#f87171';msg.style.display='block';
+    el.classList.add('cpf-invalid');el.classList.remove('cpf-valid');return false;
+  }
+  var s=0; for(var i=0;i<9;i++) s+=parseInt(nums[i])*(10-i);
+  var r=11-(s%11); if(r>=10) r=0;
+  if(r!==parseInt(nums[9])){
+    msg.textContent='CPF inválido.';msg.style.color='#f87171';msg.style.display='block';
+    el.classList.add('cpf-invalid');el.classList.remove('cpf-valid');return false;
+  }
+  s=0; for(var i=0;i<10;i++) s+=parseInt(nums[i])*(11-i);
+  r=11-(s%11); if(r>=10) r=0;
+  if(r!==parseInt(nums[10])){
+    msg.textContent='CPF inválido.';msg.style.color='#f87171';msg.style.display='block';
+    el.classList.add('cpf-invalid');el.classList.remove('cpf-valid');return false;
+  }
+  msg.textContent='CPF válido ✓';msg.style.color='#4ade80';msg.style.display='block';
+  el.classList.add('cpf-valid');el.classList.remove('cpf-invalid');return true;
+}
+
+function maskTelCad(el){
+  var v=el.value.replace(/\D/g,'').substring(0,11);
+  if(v.length>10) v=v.replace(/(\d{2})(\d{1})(\d{4})(\d{4})/,'($1) $2 $3-$4');
+  else if(v.length>6) v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+  else if(v.length>2) v=v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+  el.value=v;
+}
+
+function maskCEPCad(el){
+  var v=el.value.replace(/\D/g,'').substring(0,8);
+  if(v.length>5) v=v.replace(/(\d{5})(\d{1,3})/,'$1-$2');
+  el.value=v;
+}
+
+async function buscarCEPCad(cep){
+  var nums=cep.replace(/\D/g,'');
+  var warn=document.getElementById('cad-cep-warn');
+  var loading=document.getElementById('cad-cep-loading');
+  warn.style.display='none';
+  if(nums.length!==8) return;
+  loading.style.display='block';
+  try{
+    var r=await fetch('https://viacep.com.br/ws/'+nums+'/json/');
+    var d=await r.json();
+    loading.style.display='none';
+    if(d.erro){warn.style.display='block';return;}
+    document.getElementById('cad-rua').value=d.logradouro||'';
+    document.getElementById('cad-bairro').value=d.bairro||'';
+    document.getElementById('cad-cidade').value=d.localidade||'';
+    document.getElementById('cad-num').focus();
+  }catch(e){loading.style.display='none';warn.style.display='block';}
+}
+
+// Navegação entre steps
+function cadGoStep(n){
+  cadStep=n;
+  document.querySelectorAll('.cadastro-step').forEach(function(s){s.classList.remove('active');});
+  var stepEl=document.getElementById('cad-step-'+n);
+  if(stepEl) stepEl.classList.add('active');
+  // Update progress
+  for(var i=1;i<=3;i++){
+    var prog=document.getElementById('prog-'+i);
+    if(!prog) continue;
+    prog.className='prog-step';
+    if(i<n) prog.classList.add('done');
+    else if(i===n) prog.classList.add('active');
+  }
+}
+
+function cadStep1Next(){
+  var nome=document.getElementById('cad-nome').value.trim();
+  var cpf=document.getElementById('cad-cpf').value.trim();
+  var tel=document.getElementById('cad-tel').value.trim();
+  if(!nome){alert('Por favor, informe seu nome completo.');return;}
+  if(!cpf){alert('CPF é obrigatório.');return;}
+  if(!validarCPFCad(document.getElementById('cad-cpf'))){alert('CPF inválido. Verifique e tente novamente.');return;}
+  if(!tel){alert('Por favor, informe seu telefone/WhatsApp.');return;}
+  cadGoStep(2);
+}
+
+function cadStep2Next(){
+  // CEP nao e obrigatorio mas se preenchido deve ter 8 digitos
+  var cep=document.getElementById('cad-cep').value.replace(/\D/g,'');
+  if(cep && cep.length!==8){alert('CEP incompleto. Verifique e tente novamente.');return;}
+  // Montar resumo
+  var nome=document.getElementById('cad-nome').value.trim();
+  var cpf=document.getElementById('cad-cpf').value.trim();
+  var tel=document.getElementById('cad-tel').value.trim();
+  var email=document.getElementById('cad-email').value.trim();
+  var ig=document.getElementById('cad-ig').value.trim();
+  var rua=document.getElementById('cad-rua').value.trim();
+  var num=document.getElementById('cad-num').value.trim();
+  var bairro=document.getElementById('cad-bairro').value.trim();
+  var cidade=document.getElementById('cad-cidade').value.trim();
+  var cepFmt=document.getElementById('cad-cep').value.trim();
+  var resumo='';
+  resumo+='<strong style="color:var(--orange-light)">Nome:</strong> '+nome+'<br>';
+  resumo+='<strong style="color:var(--orange-light)">CPF:</strong> '+cpf+'<br>';
+  resumo+='<strong style="color:var(--orange-light)">Telefone:</strong> '+tel+'<br>';
+  if(email) resumo+='<strong style="color:var(--orange-light)">E-mail:</strong> '+email+'<br>';
+  if(ig) resumo+='<strong style="color:var(--orange-light)">Instagram:</strong> '+ig+'<br>';
+  if(rua) resumo+='<strong style="color:var(--orange-light)">Endereço:</strong> '+rua+(num?', '+num:'')+(bairro?' — '+bairro:'')+(cidade?' — '+cidade:'')+(cepFmt?' ('+cepFmt+')':'')+'<br>';
+  document.getElementById('cad-resumo').innerHTML=resumo;
+  cadGoStep(3);
+}
+
+async function finalizarCadastro(){
+  var btn=document.querySelector('#cad-step-3 .btn-submit');
+  btn.textContent='Salvando...';
+  btn.disabled=true;
+
+  var payload={
+    nome: document.getElementById('cad-nome').value.trim(),
+    cpf: document.getElementById('cad-cpf').value.trim(),
+    nascimento: document.getElementById('cad-nasc').value||null,
+    telefone: document.getElementById('cad-tel').value.trim(),
+    email: document.getElementById('cad-email').value.trim(),
+    instagram: document.getElementById('cad-ig').value.trim(),
+    cep: document.getElementById('cad-cep').value.trim(),
+    rua: document.getElementById('cad-rua').value.trim(),
+    numero: document.getElementById('cad-num').value.trim(),
+    bairro: document.getElementById('cad-bairro').value.trim(),
+    cidade: document.getElementById('cad-cidade').value.trim(),
+    observacoes: document.getElementById('cad-obs').value.trim(),
+  };
+
+  try{
+    var resp=await fetch(SUPABASE_URL_CAD+'/rest/v1/clientes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY_CAD,
+        'Authorization': 'Bearer '+SUPABASE_KEY_CAD,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if(resp.ok || resp.status===201){
+      // Salvar nome no sessionStorage para pre-preencher pedido
+      sessionStorage.setItem('cj_cliente_nome', payload.nome);
+      sessionStorage.setItem('cj_cliente_tel', payload.telefone);
+      // Mostrar sucesso
+      document.querySelectorAll('.cadastro-step').forEach(function(s){s.classList.remove('active');});
+      document.getElementById('cad-step-success').classList.add('active');
+      document.querySelectorAll('.prog-step').forEach(function(p){p.classList.add('done');});
+    } else {
+      var err=await resp.json();
+      if(err.code==='23505'){
+        alert('Este CPF ou e-mail já está cadastrado. Se já se cadastrou antes, pode fazer o pedido diretamente!');
+      } else {
+        alert('Erro ao salvar cadastro. Tente novamente.');
+      }
+      btn.textContent='🎉 Finalizar cadastro';
+      btn.disabled=false;
+    }
+  }catch(e){
+    alert('Erro de conexão. Tente novamente.');
+    btn.textContent='🎉 Finalizar cadastro';
+    btn.disabled=false;
+  }
+}
+
+function aposFinalizarCadastro(){
+  document.getElementById('modal-cadastro-cliente').classList.remove('active');
+  if(cadAbrirPedidoApos){
+    // Pre-preencher nome e telefone no formulario de pedido
+    setTimeout(function(){
+      var nome=sessionStorage.getItem('cj_cliente_nome');
+      var tel=sessionStorage.getItem('cj_cliente_tel');
+      if(nome) document.getElementById('ped-nome').value=nome;
+      if(tel) document.getElementById('ped-tel').value=tel;
+      openPedidoModalDireto();
+    }, 300);
+  }
+}
+
+function abrirCadastroCliente(abrirPedidoApos){
+  cadAbrirPedidoApos=!!abrirPedidoApos;
+  cadGoStep(1);
+  ['cad-nome','cad-cpf','cad-nasc','cad-tel','cad-email','cad-ig',
+   'cad-cep','cad-rua','cad-num','cad-bairro','cad-cidade','cad-obs'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+    if(el) el.classList.remove('cpf-valid','cpf-invalid');
+  });
+  document.getElementById('cad-cpf-msg').style.display='none';
+  document.getElementById('cad-cep-warn').style.display='none';
+  document.getElementById('cad-resumo').innerHTML='';
+  var btn=document.querySelector('#cad-step-3 .btn-submit');
+  if(btn){btn.textContent='🎉 Finalizar cadastro';btn.disabled=false;}
+  var btnApos=document.getElementById('btn-apos-cadastro');
+  if(btnApos) btnApos.textContent=abrirPedidoApos?'🎂 Fazer meu pedido agora':'Fechar';
+  document.getElementById('modal-cadastro-cliente').classList.add('active');
+}
+
+// Override openPedidoModal to show check first
+function openPedidoModal(){
+  document.getElementById('modal-check-cadastro').classList.add('active');
+}
+
+function openPedidoModalDireto(){
+  // Pre-preencher com dados da sessao se disponivel
+  var nome=sessionStorage.getItem('cj_cliente_nome');
+  var tel=sessionStorage.getItem('cj_cliente_tel');
+  if(nome) document.getElementById('ped-nome').value=nome;
+  if(tel) document.getElementById('ped-tel').value=tel;
+  document.getElementById('pedido-modal').classList.add('active');
+}
+
+function fecharModal(id){ document.getElementById(id).classList.remove('active'); }
 </script>
 
 </body>
